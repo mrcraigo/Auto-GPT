@@ -4,6 +4,7 @@ import dataclasses
 import json
 from typing import Literal
 
+import ftfy
 import numpy as np
 
 from autogpt.config import Config
@@ -36,19 +37,22 @@ class MemoryItem:
     def from_text(
         text: str,
         source_type: MemoryDocType,
+        config: Config,
         metadata: dict = {},
         how_to_summarize: str | None = None,
         question_for_summary: str | None = None,
     ):
-        cfg = Config()
         logger.debug(f"Memorizing text:\n{'-'*32}\n{text}\n{'-'*32}\n")
+
+        # Fix encoding, e.g. removing unicode surrogates (see issue #778)
+        text = ftfy.fix_text(text)
 
         chunks = [
             chunk
             for chunk, _ in (
-                split_text(text, cfg.embedding_model)
+                split_text(text, config.embedding_model, config)
                 if source_type != "code_file"
-                else chunk_content(text, cfg.embedding_model)
+                else chunk_content(text, config.embedding_model)
             )
         ]
         logger.debug("Chunks: " + str(chunks))
@@ -58,6 +62,7 @@ class MemoryItem:
             for summary, _ in [
                 summarize_text(
                     text_chunk,
+                    config,
                     instruction=how_to_summarize,
                     question=question_for_summary,
                 )
@@ -66,13 +71,14 @@ class MemoryItem:
         ]
         logger.debug("Chunk summaries: " + str(chunk_summaries))
 
-        e_chunks = get_embedding(chunks)
+        e_chunks = get_embedding(chunks, config)
 
         summary = (
             chunk_summaries[0]
             if len(chunks) == 1
             else summarize_text(
                 "\n\n".join(chunk_summaries),
+                config,
                 instruction=how_to_summarize,
                 question=question_for_summary,
             )[0]
@@ -81,7 +87,7 @@ class MemoryItem:
 
         # TODO: investigate search performance of weighted average vs summary
         # e_average = np.average(e_chunks, axis=0, weights=[len(c) for c in chunks])
-        e_summary = get_embedding(summary)
+        e_summary = get_embedding(summary, config)
 
         metadata["source_type"] = source_type
 
@@ -96,8 +102,8 @@ class MemoryItem:
         )
 
     @staticmethod
-    def from_text_file(content: str, path: str):
-        return MemoryItem.from_text(content, "text_file", {"location": path})
+    def from_text_file(content: str, path: str, config: Config):
+        return MemoryItem.from_text(content, "text_file", config, {"location": path})
 
     @staticmethod
     def from_code_file(content: str, path: str):
@@ -137,10 +143,13 @@ class MemoryItem:
         )
 
     @staticmethod
-    def from_webpage(content: str, url: str, question: str | None = None):
+    def from_webpage(
+        content: str, url: str, config: Config, question: str | None = None
+    ):
         return MemoryItem.from_text(
             text=content,
             source_type="webpage",
+            config=config,
             metadata={"location": url},
             question_for_summary=question,
         )

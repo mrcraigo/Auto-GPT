@@ -1,47 +1,29 @@
-# Website and Documentation Site 📰📖
-Check out *https://agpt.co*, the official news & updates site for Auto-GPT!
-The documentation also has a place here, at *https://docs.agpt.co*
+# QUICK LINKS 🔗
+# --------------
+🌎 *Official Website*: https://agpt.co.
+📖 *User Guide*: https://docs.agpt.co.
+👩 *Contributors Wiki*: https://github.com/Significant-Gravitas/Auto-GPT/wiki/Contributing.
 
-# For contributors 👷🏼
-Since releasing v0.3.0, we are working on re-architecting the Auto-GPT core to make
-it more extensible and to make room for structural performance-oriented R&D.
-In the meantime, we have less time to process incoming pull requests and issues,
-so we focus on high-value contributions:
- * significant bugfixes
- * *major* improvements to existing functionality and/or docs (so no single-typo fixes)
- * contributions that help us with re-architecture and other roadmapped items
-We have to be somewhat selective in order to keep making progress, but this does not
-mean you can't contribute. Check out the contribution guide on our wiki:
-https://github.com/Significant-Gravitas/Auto-GPT/wiki/Contributing
+# v0.4.4 RELEASE HIGHLIGHTS! 🚀
+# -----------------------------
+## GPT-4 is back!
+Following OpenAI's recent GPT-4 GA announcement, the SMART_LLM .env setting 
+now defaults to GPT-4, and Auto-GPT will use GPT-4 by default in its main loop.
 
-# 🚀 v0.4.0 Release 🚀
-Two weeks and 76 pull requests have passed since v0.3.1, and we are happy to announce
-the release of v0.4.0!
+### !! High Costs Warning !! 💰💀🚨
+GPT-4 costs ~20x more than GPT-3.5-turbo. 
+Please take note of this before using SMART_LLM. You can use `--gpt3only` 
+or `--gpt4only` to force the use of GPT-3.5-turbo or GPT-4, respectively, 
+at runtime.
 
-Highlights and notable changes since v0.3.0:
+## Re-arch v1 preview release!
+We've released a preview version of the re-arch code, under `autogpt/core`. 
+This is a major milestone for us, and we're excited to continue working on it. 
+We look forward to your feedback. Follow the process here: 
+https://github.com/Significant-Gravitas/Auto-GPT/issues/4770.
 
-## ⚠️ Command `send_tweet` is REMOVED
-Twitter functionality (and more) is now covered by plugins.
+## Other highlights
+Other fixes include plugins regressions, Azure config and security patches.
 
-## ⚠️ Memory backend deprecation 💾
-The Milvus, Pinecone and Weaviate memory backends were rendered incompatible
-by work on the memory system, and have been removed in `master`. The Redis
-memory store was also temporarily removed; we will merge a new implementation ASAP.
-Whether built-in support for the others will be added back in the future is subject to
-discussion, feel free to pitch in: https://github.com/Significant-Gravitas/Auto-GPT/discussions/4280
-
-## Document support in `read_file` 📄
-Auto-GPT can now read text from document files, with support added for PDF, DOCX, CSV,
-HTML, TeX and more!
-
-## Managing Auto-GPT's access to commands ❌🔧
-You can now disable set of built-in commands through the *DISABLED_COMMAND_CATEGORIES*
-variable in .env. Specific shell commands can also be disabled using *DENY_COMMANDS*,
-or selectively enabled using *ALLOW_COMMANDS*.
-
-## Further fixes and changes 🛠️
-Other highlights include improvements to self-feedback mode and continuous mode,
-documentation, docker and devcontainer setups, and much more. Most of the improvements
-that were made are not yet visible to users, but will pay off in the long term.
-Take a look at the Release Notes on Github for the full changelog!
-https://github.com/Significant-Gravitas/Auto-GPT/releases
+Take a look at the Release Notes on Github for the full changelog! 
+https://github.com/Significant-Gravitas/Auto-GPT/releases.
